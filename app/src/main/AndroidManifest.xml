@@ -13,6 +13,12 @@
         android:theme="@style/Theme.UTSpam"
         tools:targetApi="31">
         <activity
+            android:name=".Dashboard"
+            android:exported="false" />
+        <activity
+            android:name=".Register"
+            android:exported="false" />
+        <activity
             android:name=".login"
             android:exported="false" />
         <activity
@@ -29,7 +35,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.UTSpam"></activity>
+            android:theme="@style/Theme.UTSpam" />
     </application>
 
 </manifest>

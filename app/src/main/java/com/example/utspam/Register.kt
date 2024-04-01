@@ -2,6 +2,7 @@ package com.example.utspam
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Email
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,43 +10,39 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 
-
-class login : AppCompatActivity() {
+class Register : AppCompatActivity() {
     private lateinit var authentic: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+
+        setContentView(R.layout.activity_register)
 
         authentic = FirebaseAuth.getInstance()
-        buttonLogin.setOnClickListener{
+
+        buttonRegister.setOnClickListener {
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
 
             if(email.isEmpty() || password.isEmpty()){
-                Toast.makeText(this, "Isi semua data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Isi Data dengan baik", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            loginUser(email, password)
-
+            registerUser(email, password)
         }
+
     }
 
-    private fun loginUser(email: String, password: String){
-        authentic.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this){task ->
+    private fun registerUser(email: String, password: String){
+        authentic.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
                 if(task.isSuccessful){
                     val user = authentic.currentUser
-                    Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Registrasi berhasil", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, Dashboard::class.java))
                     finish()
                 }else{
-                    Toast.makeText(baseContext, "Login Gagal", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Registrasi gagal", Toast.LENGTH_SHORT).show()
                 }
-
             }
-
-    }
-    fun goToRegister(){
-        startActivity(Intent(this, Register::class.java))
     }
 }
