@@ -2,18 +2,16 @@ package com.example.utspam
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.utspam.databinding.ItemUserBinding
 
 class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     private val list = ArrayList<User>()
-
     inner class ViewHolder (
         private val binding: ItemUserBinding
+
     ) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(user: User) {
@@ -36,4 +34,10 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     }
 
     override fun getItemCount(): Int = list.size
+    fun updateData(user: List<User>) {
+        list.clear()
+        list.addAll(user)
+        notifyDataSetChanged()
+    }
 }
+

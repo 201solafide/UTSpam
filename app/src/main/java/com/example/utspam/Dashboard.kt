@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_dashboard.*
+//import kotlinx.android.synthetic.main.activity_dashboard.*
+import androidx.databinding.DataBindingUtil
+import com.example.utspam.databinding.ActivityDashboardBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
@@ -15,13 +17,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Dashboard : AppCompatActivity() {
     private lateinit var userAdapter: UserAdapter
     private lateinit var apiService: ApiService
+
+    private lateinit var binding: ActivityDashboardBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
 
-        recyclerViewUsers.layoutManager = LinearLayoutManager(this)
-        userAdapter = UserAdapter(emptyList())
-        recyclerViewUsers.adapter = userAdapter
+//        binding =
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard)
+
+        binding.recyclerViewUsers.layoutManager = LinearLayoutManager(this)
+        userAdapter = UserAdapter()
+        binding.recyclerViewUsers.adapter = userAdapter
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://reqres.in/api/")
@@ -31,13 +38,13 @@ class Dashboard : AppCompatActivity() {
 
         fetchData()
 
-        searchViewUsers.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        binding.searchViewUsers.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                userAdapter.filter.filter(newText)
+//                userAdapter.filter.filter(newText)
                 return false
             }
         })
@@ -48,8 +55,10 @@ class Dashboard : AppCompatActivity() {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 if(response.isSuccessful){
                     val user = response.body()?.data ?: emptyList()
-                    userAdapter = UserAdapter(user)
-                    recyclerViewUsers.adapter = userAdapter
+                    userAdapter = UserAdapter()
+                    userAdapter.updateData(user)
+                    userAdapter.notifyDataSetChanged()
+                    binding.recyclerViewUsers.adapter = userAdapter
                 }else{
                     Toast.makeText(this@Dashboard, "Fail fetch Data", Toast.LENGTH_SHORT).show()
                 }
