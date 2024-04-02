@@ -1,34 +1,39 @@
 package com.example.utspam
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.utspam.databinding.ItemUserBinding
 
-class UserAdapter(private val users: List<User>) :
-    RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+    private val list = ArrayList<User>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
-        return ViewHolder(view)
+    inner class ViewHolder (
+        private val binding: ItemUserBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
+        fun bind(user: User) {
+            binding.textViewName.text = user.first_name + user.last_name
+            binding.textViewEmail.text = user.email
+            Glide.with(itemView)
+                .load(user.avatar)
+                .centerCrop()
+                .into(binding.imageViewAvatar)
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val user = users[position]
-        holder.bind(user)
+        holder.bind(list[position])
     }
 
-    override fun getItemCount(): Int {
-        return users.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(view)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(user: User) {
-            itemView.apply {
-                textViewName.text = "${user.first_name} ${user.last_name}"
-                textViewEmail.text = user.email
-                Picasso.get().load(user.avatar).into(imageViewAvatar)
-            }
-        }
-    }
+    override fun getItemCount(): Int = list.size
 }
