@@ -1,5 +1,6 @@
 package com.example.utspam
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,14 +18,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Dashboard : AppCompatActivity() {
     private lateinit var userAdapter: UserAdapter
     private lateinit var apiService: ApiService
-
     private lateinit var binding: ActivityDashboardBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 //        binding =
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard)
+        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(this)
         userAdapter = UserAdapter()
@@ -52,6 +53,7 @@ class Dashboard : AppCompatActivity() {
     }
     private fun fetchData(){
         apiService.getUser(1).enqueue(object : Callback<ApiResponse> {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 if(response.isSuccessful){
                     val user = response.body()?.data ?: emptyList()
